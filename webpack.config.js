@@ -1,20 +1,36 @@
 /* eslint-disable no-undef */
-
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
-
-const urlDev = "https://localhost:3000/";
-const urlProd = "https://www.yload.com/";
-
-async function getHttpsOptions() {
-  const httpsOptions = await devCerts.getHttpsServerOptions();
-  return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
-}
+const dotenv = require("dotenv");
+const path = require("path");
 
 module.exports = async (env, options) => {
   const dev = options.mode === "development";
+
+  // Load environment variables from .env file
+  const envPath = path.resolve(__dirname, '.env');
+  const envConfig = dotenv.config({ path: envPath }).parsed || {};
+
+  // Create object of environment variables to pass to DefinePlugin
+  const envKeys = Object.keys(envConfig).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(envConfig[next]);
+    return prev;
+  }, {});
+
+  // Make sure NODE_ENV is set for the config.js helper function
+  envKeys["process.env.NODE_ENV"] = JSON.stringify(options.mode);
+
+  // Get URLs from env or use defaults
+  const urlDev = envConfig.DEV_URL;
+  const urlProd = envConfig.PROD_URL;
+
+  async function getHttpsOptions() {
+    const httpsOptions = await devCerts.getHttpsServerOptions();
+    return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
+  }
+
   const config = {
     devtool: "source-map",
     entry: {
@@ -87,6 +103,7 @@ module.exports = async (env, options) => {
       new webpack.ProvidePlugin({
         Promise: ["es6-promise", "Promise"],
       }),
+      new webpack.DefinePlugin(envKeys),
     ],
     devServer: {
       hot: true,

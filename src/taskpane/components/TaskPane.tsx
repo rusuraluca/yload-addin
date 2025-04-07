@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import config from '../config';
 
 interface Attachment {
     id: string;
@@ -123,7 +124,7 @@ const TaskPane: React.FC = () => {
                 }
             }
 
-            const response = await fetch('https://dummyjson.com/http/200/', {
+            const response = await fetch(config.yloadUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

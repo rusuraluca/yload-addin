@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import config from '../config';
 
 interface AuthTokens {
     token: string;
@@ -34,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const login = async (email: string, password: string): Promise<boolean> => {
         try {
-            const response = await fetch('https://dev.api.yload.eu/graphql', {
+            const response = await fetch(config.authUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

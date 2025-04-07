@@ -6,20 +6,20 @@ const getEnvUrl = (devUrl, prodUrl) => {
 const config = {
     // Base URLs for the application
     baseUrl: getEnvUrl(
-        process.env.DEV_URL || 'https://localhost:3000/',
-        process.env.PROD_URL || 'https://www.yload.eu/'
+        process.env.DEV_URL,
+        process.env.PROD_URL
     ),
 
     // Authentication API endpoints
     authUrl: getEnvUrl(
-        process.env.DEV_AUTH_URL || 'https://dev.api.yload.eu/graphql',
-        process.env.PROD_AUTH_URL || 'https://fracht.network.yload.eu/graphql'
+        process.env.DEV_AUTH_URL,
+        process.env.PROD_AUTH_URL
     ),
 
     // Yload API endpoints for customer operations
     yloadUrl: getEnvUrl(
-        process.env.DEV_YLOAD_URL || 'https://dummyjson.com/http/200/',
-        process.env.PROD_YLOAD_URL || 'https://fracht.network.yload.eu/api/v1'
+        process.env.DEV_YLOAD_URL,
+        process.env.PROD_YLOAD_URL
     )
 };
 

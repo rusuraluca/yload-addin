@@ -28,10 +28,10 @@
   ],
   "compileOnSave": false,
   "buildOnSave": false,
-  "ts-node": { 
+  "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
     },
-    "files": true 
+    "files": true
   }
 }
