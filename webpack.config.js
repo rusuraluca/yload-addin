@@ -46,6 +46,9 @@ module.exports = async (env, options) => {
     },
     resolve: {
       extensions: [".ts", ".tsx", ".html", ".js"],
+      fallback: {
+        "process/browser": require.resolve("process/browser")
+      }
     },
     module: {
       rules: [
@@ -102,6 +105,7 @@ module.exports = async (env, options) => {
       }),
       new webpack.ProvidePlugin({
         Promise: ["es6-promise", "Promise"],
+        process: 'process/browser',
       }),
       new webpack.DefinePlugin(envKeys),
     ],
