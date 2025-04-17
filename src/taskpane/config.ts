@@ -10,17 +10,16 @@ const config = {
         process.env.PROD_URL
     ),
 
-    // Authentication API endpoints
+    // Yload API endpoints for authentication
     authUrl: getEnvUrl(
         process.env.DEV_AUTH_URL,
         process.env.PROD_AUTH_URL
     ),
 
-    // Yload API endpoints for customer operations
-    yloadUrl: getEnvUrl(
-        process.env.DEV_YLOAD_URL,
-        process.env.PROD_YLOAD_URL
-    )
+    apiBaseUrl: getEnvUrl(
+        process.env.DEV_BASE_URL,
+        process.env.PROD_BASE_URL
+    ),
 };
 
 export default config;

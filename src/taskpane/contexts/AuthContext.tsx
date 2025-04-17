@@ -7,6 +7,7 @@ interface AuthTokens {
     userId: string;
     exp: string;
     expRefresh: string;
+    userName?: string;
 }
 
 interface AuthContextType {
@@ -14,13 +15,15 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => void;
     isAuthenticated: boolean;
+    fetchUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     tokens: null,
     login: async () => false,
     logout: () => { },
-    isAuthenticated: false
+    isAuthenticated: false,
+    fetchUserData: async () => {}
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -29,9 +32,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const storedTokens = localStorage.getItem('yload_auth_tokens');
         if (storedTokens) {
-            setTokens(JSON.parse(storedTokens));
+            const parsedTokens = JSON.parse(storedTokens);
+            setTokens(parsedTokens);
+
+            if (parsedTokens && !parsedTokens.userName) {
+                fetchUserData();
+            }
         }
     }, []);
+
+    const fetchUserData = async () => {
+        if (!tokens || !tokens.userId) return;
+
+        try {
+            const response = await fetch(config.authUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokens.token}`
+                },
+                body: JSON.stringify({
+                    operationName: "getUserData",
+                    variables: { userId: tokens.userId },
+                    query: `
+                        query getUserData($userId: ID) {
+                            getUserData(userId: $userId) {
+                                userId
+                                id
+                                name
+                                email
+                            }
+                        }
+                    `
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.data?.getUserData) {
+                const userData = result.data.getUserData;
+                const updatedTokens = {
+                    ...tokens,
+                    userName: userData.name
+                };
+                setTokens(updatedTokens);
+                localStorage.setItem('yload_auth_tokens', JSON.stringify(updatedTokens));
+            }
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+        }
+    };
 
     const login = async (email: string, password: string): Promise<boolean> => {
         try {
@@ -48,16 +98,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         pageType: 'network'
                     },
                     query: `
-            mutation login($email: String!, $pass: String!, $pageType: pageTypeEnumGQL) {
-              login(email: $email, pass: $pass, pageType: $pageType) {
-                token
-                exp
-                userId
-                refreshToken
-                expRefresh
-              }
-            }
-          `
+                        mutation login($email: String!, $pass: String!, $pageType: pageTypeEnumGQL) {
+                            login(email: $email, pass: $pass, pageType: $pageType) {
+                                token
+                                exp
+                                userId
+                                refreshToken
+                                expRefresh
+                            }
+                        }
+                    `
                 })
             });
 
@@ -67,6 +117,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const authTokens = result.data.login;
                 setTokens(authTokens);
                 localStorage.setItem('yload_auth_tokens', JSON.stringify(authTokens));
+
+                await fetchUserData();
                 return true;
             }
             return false;
@@ -86,7 +138,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             tokens,
             login,
             logout,
-            isAuthenticated: !!tokens
+            isAuthenticated: !!tokens,
+            fetchUserData
         }}>
             {children}
         </AuthContext.Provider>
