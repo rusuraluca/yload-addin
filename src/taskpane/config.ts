@@ -4,6 +4,8 @@ const config = {
 
     // Yload API endpoints for authentication
     authUrl: 'https://dev.api.yload.eu/graphql',
+
+    apiBaseUrl: 'https://dev.work.yload.eu'
 };
 
 export default config;
