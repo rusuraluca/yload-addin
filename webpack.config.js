@@ -23,8 +23,8 @@ module.exports = async (env, options) => {
   envKeys["process.env.NODE_ENV"] = JSON.stringify(options.mode);
 
   // Get URLs from env or use defaults
-  const urlDev = envConfig.DEV_URL;
-  const urlProd = envConfig.PROD_URL;
+  const urlDev = envConfig.DEV_URL; // Used for other purposes, keep it
+  const urlProd = envConfig.PROD_URL; // Used for other purposes, keep it
 
   async function getHttpsOptions() {
     const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -91,15 +91,12 @@ module.exports = async (env, options) => {
             to: "assets/[name][ext][query]",
           },
           {
-            from: "manifest*.xml",
-            to: "[name]" + "[ext]",
-            transform(content) {
-              if (dev) {
-                return content;
-              } else {
-                return content.toString().replace(new RegExp(urlDev, "g"), urlProd);
-              }
-            },
+            // Now, we always copy from the single manifest.xml.
+            // It is assumed to be production-ready or use placeholders that the app itself resolves.
+            // No transformation is needed here anymore as manifest.xml was directly updated.
+            from: "manifest.xml",
+            to: "manifest.xml",
+            // transform function removed
           },
         ],
       }),

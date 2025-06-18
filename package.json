@@ -12,15 +12,15 @@
     "dev_server_port": 3000
   },
   "scripts": {
-    "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
+    "build:prod": "webpack --mode production",
     "dev-server": "webpack serve --mode development",
     "lint": "office-addin-lint check",
     "lint:fix": "office-addin-lint fix",
     "prettier": "office-addin-lint prettier",
     "signin": "office-addin-dev-settings m365-account login",
     "signout": "office-addin-dev-settings m365-account logout",
-    "start": "office-addin-debugging start manifest.xml",
+    "start": "office-addin-debugging start manifest.xml --url \"https://localhost:3000/taskpane.html?env=dev\"",
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-addin-manifest validate manifest.xml",
     "watch": "webpack --mode development --watch",
