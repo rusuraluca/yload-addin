@@ -7,13 +7,16 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Yload</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Yload Customer Add In"/>
-  <Description DefaultValue="Get customer details in Yload"/>
-  <IconUrl DefaultValue="https://imgur.com/yBe3Cty.png"/>
-  <HighResolutionIconUrl DefaultValue="https://imgur.com/p4nF14o.png"/>
+  <DisplayName DefaultValue="Yload 365"/>
+  <Description DefaultValue="Access Yload customer details and actions within Microsoft 365"/>
+  <IconUrl DefaultValue="https://yload-app.netlify.app/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://yload-app.netlify.app/assets/icon-80.png"/>
   <SupportUrl DefaultValue="https://learn.microsoft.com/office/dev/add-ins/overview/office-add-in-code-samples"/>
   <AppDomains>
-    <AppDomain>https://www.yload.eu</AppDomain>
+    <AppDomain>https://yload-app.netlify.app</AppDomain>
+    <AppDomain>https://dev.api.yload.eu</AppDomain>
+    <AppDomain>https://fracht.network.yload.eu</AppDomain>
+    <AppDomain>https://dev.work.yload.eu</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
@@ -26,7 +29,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:3000/taskpane.html"/>
+        <SourceLocation DefaultValue="https://yload-app.netlify.app/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -72,20 +75,20 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://yload-app.netlify.app/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://yload-app.netlify.app/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://yload-app.netlify.app/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://yload-app.netlify.app/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Yload Customer Add In"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Get Customer"/>
-        <bt:String id="TaskpaneButton.SupertipTitle" DefaultValue="Yload Customer Add In"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Yload 365"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Open Yload"/>
+        <bt:String id="TaskpaneButton.SupertipTitle" DefaultValue="Open Yload"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="TaskpaneButton.SupertipText" DefaultValue="Get customer details in Yload"/>
+        <bt:String id="TaskpaneButton.SupertipText" DefaultValue="Access Yload features and customer information."/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

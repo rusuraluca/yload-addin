@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import config from '../config';
+import appConfig from '../config';
 
 interface AuthTokens {
     token: string;
@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!tokens || !tokens.userId) return;
 
         try {
-            const response = await fetch(config.authUrl, {
+            const response = await fetch(appConfig.authUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const login = async (email: string, password: string): Promise<boolean> => {
         try {
-            const response = await fetch(config.authUrl, {
+            const response = await fetch(appConfig.authUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import config from "../config";
+import appConfig from "../config";
 
 interface Attachment {
     id: string;
@@ -68,25 +68,44 @@ const TaskPane: React.FC = () => {
 
     useEffect(() => {
         Office.onReady((info) => {
-            if (info.host === Office.HostType.Outlook) {
+            if (info.host === Office.HostType.Outlook && Office.context.mailbox.item) {
                 const item = Office.context.mailbox.item;
 
-                item.body.getAsync(Office.CoercionType.Text, function (result) {
-                    if (result.status === Office.AsyncResultStatus.Succeeded) {
-                        setContext(result.value);
-                    } else {
-                        setStatus("Could not retrieve email content");
-                    }
-                });
+                if (item.body) {
+                    item.body.getAsync(Office.CoercionType.Text, function (result) {
+                        if (result.status === Office.AsyncResultStatus.Succeeded) {
+                            setContext(result.value);
+                        } else {
+                            setStatus("Could not retrieve email content.");
+                            console.error("Error getting email body:", result.error?.message, result.error?.code);
+                        }
+                    });
+                } else {
+                    console.warn("Email body not available.");
+                }
 
                 if (item.from) {
                     setCustomerEmail(item.from.emailAddress);
                     setCustomerName(item.from.displayName || "Unknown");
                 } else {
-                    setStatus("Could not retrieve customer details");
+                    console.warn("Customer details (from) not available.");
                 }
 
-                loadAttachments(item);
+                if (item.attachments && item.attachments.length > 0) {
+                    loadAttachments(item);
+                } else {
+                    // No attachments or item.attachments is null/undefined
+                    setIsLoadingAttachments(false); // Ensure loading state is cleared
+                    setAttachments([]); // Ensure attachments are empty
+                }
+            } else {
+                console.log("Running outside Outlook context or no mail item selected.");
+                // Clear out any potential stale data if no item context
+                setCustomerEmail("");
+                setCustomerName("");
+                setContext("");
+                setAttachments([]);
+                setIsLoadingAttachments(false);
             }
         });
 
@@ -116,7 +135,7 @@ const TaskPane: React.FC = () => {
 
         setIsLoadingOpportunities(true);
         try {
-            const response = await fetch(`${config.apiBaseUrl}/api/v1/crm/opportunities`, {
+            const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/crm/opportunities`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${tokens.token}`,
@@ -147,7 +166,7 @@ const TaskPane: React.FC = () => {
 
         try {
             const response = await fetch(
-                `${config.apiBaseUrl}/api/v1/crm/opportunities/${opportunityId}`,
+                `${appConfig.apiBaseUrl}/api/v1/crm/opportunities/${opportunityId}`,
                 {
                     method: "GET",
                     headers: {
@@ -161,11 +180,12 @@ const TaskPane: React.FC = () => {
                 const data = await response.json();
                 setDetailedOpportunity(data);
             } else {
-                console.error("Failed to fetch opportunity details");
-                setStatus("Failed to load opportunity details");
+                console.error("Failed to fetch opportunity details", response.statusText);
+                setStatus("Failed to load opportunity details.");
             }
         } catch (error) {
             console.error("Error fetching opportunity details:", error);
+            setStatus("Error fetching opportunity details.");
         }
     };
 
@@ -178,13 +198,15 @@ const TaskPane: React.FC = () => {
         const attachmentsInfo: Attachment[] = [];
 
         item.attachments.forEach((attachment) => {
-            attachmentsInfo.push({
-                id: attachment.id,
-                name: attachment.name,
-                size: attachment.size,
-                contentType: attachment.contentType,
-                isInline: attachment.isInline,
-            });
+            if (!attachment.isInline) {
+                attachmentsInfo.push({
+                    id: attachment.id,
+                    name: attachment.name,
+                    size: attachment.size,
+                    contentType: attachment.contentType,
+                    isInline: attachment.isInline,
+                });
+            }
         });
 
         setAttachments(attachmentsInfo);
@@ -239,7 +261,7 @@ const TaskPane: React.FC = () => {
         formData.append("parentEntityId", opportunityId);
         formData.append("isPublic", "false");
 
-        const response = await fetch(`${config.apiBaseUrl}/api/v1/helper/files`, {
+        const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/helper/files`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${tokens?.token}`,
@@ -338,7 +360,7 @@ const TaskPane: React.FC = () => {
 
             const updatedBlocks = [newContentBlock, ...detailedOpportunity.contentBlocks];
 
-            const response = await fetch(`${config.apiBaseUrl}/api/v1/crm/opportunities/${selectedOpportunity}`, {
+            const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/crm/opportunities/${selectedOpportunity}`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${tokens.token}`,
