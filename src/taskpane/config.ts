@@ -28,18 +28,21 @@ if (process.env.NODE_ENV === 'production') {
 // Error logging for missing critical URLs
 // These checks are important because empty URLs will likely cause runtime application errors.
 if (!appConfig.baseUrl) {
+  const varName = process.env.NODE_ENV === 'production' ? 'PROD_FRONTEND_URL' : 'DEV_URL';
   console.error(`Critical frontend URL (baseUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_FRONTEND_URL' : 'DEV_URL'} in build environment.`);
+                `Check ${varName} in build environment.`);
   appConfig.baseUrl = ""; // Ensure property exists
 }
 if (!appConfig.authUrl) {
+  const varName = process.env.NODE_ENV === 'production' ? 'PROD_AUTH_URL' : 'DEV_AUTH_URL';
   console.error(`Critical API URL (authUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_AUTH_URL' : 'DEV_AUTH_URL'} in build environment.`);
+                `Check ${varName} in build environment.`);
   appConfig.authUrl = ""; // Ensure property exists
 }
 if (!appConfig.apiBaseUrl) {
+  const varName = process.env.NODE_ENV === 'production' ? 'PROD_BASE_URL' : 'DEV_BASE_URL';
   console.error(`Critical API URL (apiBaseUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_BASE_URL' : 'DEV_BASE_URL'} in build environment.`);
+                `Check ${varName} in build environment.`);
   appConfig.apiBaseUrl = ""; // Ensure property exists
 }
 
