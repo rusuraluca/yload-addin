@@ -9,8 +9,8 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Yload 365"/>
   <Description DefaultValue="Access Yload customer details and actions within Microsoft 365"/>
-  <IconUrl DefaultValue="https://yload-app.netlify.app/assets/teams-outline-32x32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://yload-app.netlify.app/assets/teams-color-192x192.png"/>
+  <IconUrl DefaultValue="https://yload-app.netlify.app/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://yload-app.netlify.app/assets/icon-80.png"/>
   <SupportUrl DefaultValue="https://learn.microsoft.com/office/dev/add-ins/overview/office-add-in-code-samples"/>
   <AppDomains>
     <AppDomain>https://yload-app.netlify.app</AppDomain>
@@ -59,9 +59,9 @@
                     <Description resid="TaskpaneButton.SupertipText"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Icon.32x32"/>
+                    <bt:Image size="16" resid="Icon.16x16"/>
                     <bt:Image size="32" resid="Icon.32x32"/>
-                    <bt:Image size="80" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="Taskpane.Url"/>
@@ -75,8 +75,9 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.32x32" DefaultValue="https://yload-app.netlify.app/assets/teams-outline-32x32.png"/>
-        <bt:Image id="Icon.192x192" DefaultValue="https://yload-app.netlify.app/assets/teams-color-192x192.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://yload-app.netlify.app/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://yload-app.netlify.app/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://yload-app.netlify.app/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Taskpane.Url" DefaultValue="https://yload-app.netlify.app/taskpane.html"/>

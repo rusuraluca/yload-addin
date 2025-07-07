@@ -7,7 +7,7 @@ interface AppConfig {
 
 let appConfig: AppConfig;
 
-// Safely access window.location.search. This code runs in the browser.
+// Safely access window.location.search
 const currentSearch = (typeof window !== 'undefined' && window.location && window.location.search) ? window.location.search : "";
 const queryParams = new URLSearchParams(currentSearch);
 const runtimeEnvQueryParam = queryParams.get('env');
@@ -17,52 +17,35 @@ let effectiveRuntimeEnv: 'prod' | 'dev' = 'dev'; // Default to 'dev'
 if (runtimeEnvQueryParam === 'prod') {
   effectiveRuntimeEnv = 'prod';
 }
-// Any other value of 'env' (including 'dev') or its absence defaults to 'dev'
-
-// All URLs (baseUrl, authUrl, apiBaseUrl) are now selected based on the effectiveRuntimeEnv,
-// which is derived from the '?env=' query parameter.
-// The process.env.XXX variables are injected at build time by webpack.
 
 if (effectiveRuntimeEnv === 'prod') {
   appConfig = {
-    // Use PROD_FRONTEND_URL for production baseUrl, as specified.
-    // This implies PROD_FRONTEND_URL should be defined in .env and exposed by webpack.
-    baseUrl: process.env.PROD_FRONTEND_URL || "",
+    baseUrl: process.env.PROD_FRONTEND_URL || "", // Use PROD_FRONTEND_URL for prod baseUrl
     authUrl: process.env.PROD_AUTH_URL || "",
     apiBaseUrl: process.env.PROD_BASE_URL || "",
     runtimeEnv: 'prod',
   };
-} else { // 'dev' or fallback due to invalid/missing query param
+} else { // 'dev' or fallback
   appConfig = {
-    baseUrl: process.env.DEV_URL || "", // DEV_URL is used for development baseUrl
+    baseUrl: process.env.DEV_URL || "", // Use DEV_URL for dev baseUrl
     authUrl: process.env.DEV_AUTH_URL || "",
     apiBaseUrl: process.env.DEV_BASE_URL || "",
     runtimeEnv: 'dev',
   };
 }
 
-// Console errors for missing critical URLs.
-// These checks are important because empty URLs will likely cause runtime application errors.
+// Error logging and ensuring properties exist
 if (!appConfig.baseUrl) {
-    console.error(
-        `Critical frontend baseUrl is not defined for runtimeEnv '${effectiveRuntimeEnv}'. ` +
-        `This means ${effectiveRuntimeEnv === 'prod' ? 'PROD_FRONTEND_URL' : 'DEV_URL'} ` +
-        `was not available or empty during the build process.`
-    );
+    console.error(`Critical frontend URL (baseUrl) for runtimeEnv '${effectiveRuntimeEnv}' is not defined. Check PROD_FRONTEND_URL/DEV_URL in build environment.`);
+    appConfig.baseUrl = ""; // Ensure property exists
 }
 if (!appConfig.authUrl) {
-    console.error(
-        `Critical authUrl is not defined for runtimeEnv '${effectiveRuntimeEnv}'. ` +
-        `This means ${effectiveRuntimeEnv === 'prod' ? 'PROD_AUTH_URL' : 'DEV_AUTH_URL'} ` +
-        `was not available or empty during the build process.`
-    );
+  console.error(`Critical API URL (authUrl) for runtimeEnv '${effectiveRuntimeEnv}' is not defined. Check PROD_AUTH_URL/DEV_AUTH_URL in build environment.`);
+  appConfig.authUrl = ""; // Ensure property exists
 }
 if (!appConfig.apiBaseUrl) {
-    console.error(
-        `Critical apiBaseUrl is not defined for runtimeEnv '${effectiveRuntimeEnv}'. ` +
-        `This means ${effectiveRuntimeEnv === 'prod' ? 'PROD_BASE_URL' : 'DEV_BASE_URL'} ` +
-        `was not available or empty during the build process.`
-    );
+  console.error(`Critical API URL (apiBaseUrl) for runtimeEnv '${effectiveRuntimeEnv}' is not defined. Check PROD_BASE_URL/DEV_BASE_URL in build environment.`);
+  appConfig.apiBaseUrl = ""; // Ensure property exists
 }
 
 export default appConfig;

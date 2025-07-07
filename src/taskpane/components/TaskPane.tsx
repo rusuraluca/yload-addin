@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import config from "../config";
+import appConfig from "../config";
 
 interface Attachment {
     id: string;
@@ -135,7 +135,7 @@ const TaskPane: React.FC = () => {
 
         setIsLoadingOpportunities(true);
         try {
-            const response = await fetch(`${config.apiBaseUrl}/api/v1/crm/opportunities`, {
+            const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/crm/opportunities`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${tokens.token}`,
@@ -166,7 +166,7 @@ const TaskPane: React.FC = () => {
 
         try {
             const response = await fetch(
-                `${config.apiBaseUrl}/api/v1/crm/opportunities/${opportunityId}`,
+                `${appConfig.apiBaseUrl}/api/v1/crm/opportunities/${opportunityId}`,
                 {
                     method: "GET",
                     headers: {
@@ -261,7 +261,7 @@ const TaskPane: React.FC = () => {
         formData.append("parentEntityId", opportunityId);
         formData.append("isPublic", "false");
 
-        const response = await fetch(`${config.apiBaseUrl}/api/v1/helper/files`, {
+        const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/helper/files`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${tokens?.token}`,
@@ -360,7 +360,7 @@ const TaskPane: React.FC = () => {
 
             const updatedBlocks = [newContentBlock, ...detailedOpportunity.contentBlocks];
 
-            const response = await fetch(`${config.apiBaseUrl}/api/v1/crm/opportunities/${selectedOpportunity}`, {
+            const response = await fetch(`${appConfig.apiBaseUrl}/api/v1/crm/opportunities/${selectedOpportunity}`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${tokens.token}`,
