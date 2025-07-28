@@ -27,19 +27,33 @@ if (process.env.NODE_ENV === 'production') {
 
 // Error logging for missing critical URLs
 // These checks are important because empty URLs will likely cause runtime application errors.
+const nodeEnv = process.env.NODE_ENV; // Cache a copy to avoid repeated access and ensure consistency
+
 if (!appConfig.baseUrl) {
-  console.error(`Critical frontend URL (baseUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_FRONTEND_URL' : 'DEV_URL'} in build environment.`);
+  let varName = 'DEV_URL'; // Default to dev
+  if (nodeEnv === 'production') {
+    varName = 'PROD_FRONTEND_URL';
+  }
+  console.error(`Critical frontend URL (baseUrl) for NODE_ENV='${nodeEnv}' is not defined. ` +
+                `Check ${varName} in build environment.`);
   appConfig.baseUrl = ""; // Ensure property exists
 }
 if (!appConfig.authUrl) {
-  console.error(`Critical API URL (authUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_AUTH_URL' : 'DEV_AUTH_URL'} in build environment.`);
+  let varName = 'DEV_AUTH_URL'; // Default to dev
+  if (nodeEnv === 'production') {
+    varName = 'PROD_AUTH_URL';
+  }
+  console.error(`Critical API URL (authUrl) for NODE_ENV='${nodeEnv}' is not defined. ` +
+                `Check ${varName} in build environment.`);
   appConfig.authUrl = ""; // Ensure property exists
 }
 if (!appConfig.apiBaseUrl) {
-  console.error(`Critical API URL (apiBaseUrl) for NODE_ENV='${process.env.NODE_ENV}' is not defined. ` +
-                `Check ${process.env.NODE_ENV === 'production' ? 'PROD_BASE_URL' : 'DEV_BASE_URL'} in build environment.`);
+  let varName = 'DEV_BASE_URL'; // Default to dev
+  if (nodeEnv === 'production') {
+    varName = 'PROD_BASE_URL';
+  }
+  console.error(`Critical API URL (apiBaseUrl) for NODE_ENV='${nodeEnv}' is not defined. ` +
+                `Check ${varName} in build environment.`);
   appConfig.apiBaseUrl = ""; // Ensure property exists
 }
 
